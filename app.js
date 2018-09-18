@@ -1,65 +1,61 @@
+//Variables
 const qwerty = document.getElementById("qwerty");
-const phrase = document.getElementById("phrase");
-const letter = document.querySelectorAll(".letter");
 const overlay = document.getElementById("overlay");
-const scoreboard = document.getElementById("scoreboard");
+const imgLi = document.querySelectorAll(".tries");
 const startButton = document.querySelector(".btn__reset");
 const ul = document.querySelector("ul");
-const phrases = [
-  "Falafel and tahini",
-  "Caramel and sea salt",
-  "Cookies and cream",
-  "Peach cobbler and icecream",
-  "Macrooni and cheese",
-  "Clotted cream and jam"
-]
+const li = document.createElement('li');
+const phrases = [ "Falafel and tahini ",
+                  "Caramel and sea salt ",
+                  "Cookies and cream ",
+                  "Peach cobbler and icecream ",
+                  "Macrooni and cheese ",
+                  "Clotted cream and jam "]
 
 let title = document.querySelector(".title");
 let button = document.getElementsByTagName("button");
 let missed = 0;
 
-// start game
-startButton.addEventListener("click", (e) =>{
-  e.target.style.display = "none";
+//start game
+startButton.addEventListener("click", (e) => {
+  overlay.style.display = "none";
 });
 
-//get keys
-
-
-//Random Phrases from Array
+//Pick random phrases from phrases
 function getRandomPhraseAsArray(arr) {
   //pick random array
   const randomArr = Math.floor(Math.random()*arr.length);
-  const picked = arr[randomArr];
-  const pickedNormalised = picked.toLowerCase();
-  const splitPhrase = pickedNormalised.split("");
+  const selected = arr[randomArr];
+  const selectedNormalised = selected.toLowerCase();
+  const splitPhrase = selectedNormalised.split("");
   return splitPhrase;
-};
+}
 
-//display getRandomPhraseAsArray results
+//Variable to hold value from getRandomPhraseAsArray
 const addPhraseToDisplay = (arr) => {
   for (i=0; i<arr.length; i+=1){
     const li = document.createElement('li');
     li.textContent = arr[i];
     if (li.textContent !== ' ') {
-      li.className = 'letter';
+      li.classList.add('letter');
     } else {
-      li.className = 'space';
+      li.classList.add('space');
     }
     ul.appendChild(li);
   }
-}
+};
 
+//Display randomly selected phrase
+const selectedPhrase = getRandomPhraseAsArray(phrases);
+addPhraseToDisplay(selectedPhrase);
 
-const phraseArray = getRandomPhraseAsArray(phrases);
-console.log(addPhraseToDisplay);
-
-//does keys match with letters and returns correct letters
-function checkLetter (e) {
+//Variable - check selected keys - returns boolean
+let checkLetter = (e) => {
   let letterFound = null;
-  const selectedL = e.target;
+  let selectedLetter = e.target;
+  const letter = document.querySelectorAll('.letter')
   for (let i=0; i<letter.length; i+=1) {
-    if (selectedL.textContent === letter[i].textContent) {
+    if (selectedLetter.textContent === letter[i].textContent) {
       letter[i].classList.add('show');
       const correct = letter[i].textContent;
       letterFound = true
@@ -68,12 +64,11 @@ function checkLetter (e) {
   return letterFound;
 };
 
-//is all letter correct? show win screen!
+//Function - check score
 function checkWin () {
   const show = document.querySelectorAll('.show');
   const letter = document.querySelectorAll('.letter');
   if (show.length === letter.length) {
-    console.log('Player Wins!');
     overlay.style.display = 'flex';
     overlay.classList.add('winner');
     title.textContent = 'You won!'
@@ -81,28 +76,27 @@ function checkWin () {
   }
 };
 
-
-//HANDLERS ---
+//HANDLERS -- CALLING EVERYTHING LIVE
 qwerty.addEventListener ("click", (e) => {
-
   // keys
-  if (e.target.tagName === 'button') {
+  if (e.target.tagName === 'BUTTON') {
     e.target.classList.add('chosen');
     e.target.setAttribute('disabled', 'true');
   }
 
   //checking letter
   checkLetter(e);
-  if (e.target.tagName === 'button' && matched === null) {
+  correct = checkLetter(e)
+
+  if (e.target.tagName === 'BUTTON' && correct === null) {
     i = missed;
-    scoreboard[i].setAttribute('src', 'images/lostHeart.png');
+    imgLi[i].firstChild.setAttribute('src', 'images/lostHeart.png');
     missed += 1;
     //storing the amount of lives lost
   }
 
   //checking score
   if (missed === 5) {
-    console.log('Come on, you can do this!');
     overlay.style.display = 'flex';
     overlay.classList.add('lose');
     title.textContent = 'Sorry, there is always tomorrow!';
@@ -112,11 +106,9 @@ qwerty.addEventListener ("click", (e) => {
   //checking if won
   checkWin();
 
-
 });
 
-//reset
-
+//Reset game -----
 startButton.addEventListener('click', (e) => {
 
     if (e.target.textContent === 'Play again') {
@@ -124,11 +116,10 @@ startButton.addEventListener('click', (e) => {
 
     //reset score and hearts
     missed = 0;
-    for (i=0; i<scoreboard.length; i+=1) {
-      scoreboard[i].setAttribute('src', 'images/liveHeart.png');
+    for (i=0; i<imgLi.length; i+=1) {
+      imgLi[i].firstChild.setAttribute('src', 'images/liveHeart.png');
     }
     // remove list items
-    const li = phrase.querySelectorAll('li');
     for (i=0; i<li.length; i+=1) {
       ul.removeChild(li[i]);
     }
@@ -144,7 +135,6 @@ startButton.addEventListener('click', (e) => {
 
     //generate new random phrase
     const characters = getRandomPhraseAsArray(phrases);
-    console.log(characters)
 
     // Add characters to display
     addPhraseToDisplay(characters);
