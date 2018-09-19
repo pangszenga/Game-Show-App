@@ -4,7 +4,6 @@ const overlay = document.getElementById("overlay");
 const imgLi = document.querySelectorAll(".tries");
 const startButton = document.querySelector(".btn__reset");
 const ul = document.querySelector("ul");
-const li = document.createElement('li');
 const phrases = [ "Falafel and tahini ",
                   "Caramel and sea salt ",
                   "Cookies and cream ",
@@ -46,7 +45,7 @@ const addPhraseToDisplay = (arr) => {
 };
 
 //Display randomly selected phrase
-const selectedPhrase = getRandomPhraseAsArray(phrases);
+let selectedPhrase = getRandomPhraseAsArray(phrases);
 addPhraseToDisplay(selectedPhrase);
 
 //Variable - check selected keys - returns boolean
@@ -119,10 +118,11 @@ startButton.addEventListener('click', (e) => {
     for (i=0; i<imgLi.length; i+=1) {
       imgLi[i].firstChild.setAttribute('src', 'images/liveHeart.png');
     }
-    // remove list items
-    for (i=0; i<li.length; i+=1) {
-      ul.removeChild(li[i]);
-    }
+    // remove previous phrase list items
+        const removeLi = phrase.querySelectorAll('li');
+        for (i=0; i<removeLi.length; i+=1) {
+          ul.removeChild(removeLi[i]);
+        }
 
     // reset keyboard buttons
     for (i=0; i<button.length; i+=1) {
@@ -133,10 +133,9 @@ startButton.addEventListener('click', (e) => {
     // remove classes from overlay
     overlay.classList.remove('win', 'lose');
 
-    //generate new random phrase
-    const characters = getRandomPhraseAsArray(phrases);
-
+    // generate random phrase
+    selectedPhrase = getRandomPhraseAsArray(phrases);
     // Add characters to display
-    addPhraseToDisplay(characters);
+    addPhraseToDisplay(selectedPhrase);
   }
 });
